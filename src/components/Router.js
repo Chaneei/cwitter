@@ -4,7 +4,7 @@ import Home from "../routes/Home";
 import Auth from "../routes/Auth";
 
 const AppRouter = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   return (
     <Router>
       <Routes>
