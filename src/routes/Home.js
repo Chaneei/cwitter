@@ -1,8 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { dbService } from "../fbase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query } from "firebase/firestore";
 function Home() {
   const [cweet, setCweet] = useState("");
+  const [cweets, setCweets] = useState([]);
+  const getCweets = async () => {
+    const q = query(collection(dbService, "cweets"));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      const cweetObj = {
+        ...doc.data(),
+        id: doc.id,
+      };
+      setCweets((prev) => [cweetObj, ...prev]);
+    });
+  };
+  useEffect(() => {
+    getCweets();
+  }, []);
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -21,6 +36,9 @@ function Home() {
     } = e;
     setCweet(value);
   };
+
+  console.log(cweets);
+
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -33,6 +51,13 @@ function Home() {
         />
         <input type="submit" value="Cweet" />
       </form>
+      <div>
+        {cweets.map((cweet) => (
+          <div key={cweet.id}>
+            <h4>{cweet.cweet}</h4>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
