@@ -1,29 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { dbService } from "../fbase";
-import { addDoc, collection, getDocs, query } from "firebase/firestore";
-function Home() {
+import {
+  addDoc,
+  collection,
+  query,
+  onSnapshot,
+  orderBy,
+} from "firebase/firestore";
+function Home({ userObj }) {
   const [cweet, setCweet] = useState("");
   const [cweets, setCweets] = useState([]);
-  const getCweets = async () => {
-    const q = query(collection(dbService, "cweets"));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      const cweetObj = {
-        ...doc.data(),
-        id: doc.id,
-      };
-      setCweets((prev) => [cweetObj, ...prev]);
-    });
-  };
+
   useEffect(() => {
-    getCweets();
+    const q = query(
+      collection(dbService, "cweets"),
+      orderBy("createdAt", "desc")
+    );
+    onSnapshot(q, (snapshot) => {
+      const cweetArr = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setCweets(cweetArr);
+    });
   }, []);
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
       await addDoc(collection(dbService, "cweets"), {
-        cweet,
+        text: cweet,
         createdAt: Date.now(),
+        creatorId: userObj.uid,
       });
     } catch (error) {
       console.log(error);
@@ -36,8 +43,6 @@ function Home() {
     } = e;
     setCweet(value);
   };
-
-  console.log(cweets);
 
   return (
     <div>
@@ -54,7 +59,7 @@ function Home() {
       <div>
         {cweets.map((cweet) => (
           <div key={cweet.id}>
-            <h4>{cweet.cweet}</h4>
+            <h4>{cweet.text}</h4>
           </div>
         ))}
       </div>

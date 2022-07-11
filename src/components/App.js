@@ -5,16 +5,26 @@ import { authService } from "../fbase";
 function App() {
   const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userObj, setUserObj] = useState(null);
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       //user의 유뮤를 파악하여 로그인 상태 변경
-      user ? setIsLoggedIn(true) : setIsLoggedIn(false);
+      if (user) {
+        setIsLoggedIn(true);
+        setUserObj(user);
+      } else {
+        setIsLoggedIn(false);
+      }
       setInit(true);
     });
   }, []);
   return (
     <>
-      {init ? <AppRouter isLoggedIn={isLoggedIn} /> : "Initializing..."}
+      {init ? (
+        <AppRouter userObj={userObj} isLoggedIn={isLoggedIn} />
+      ) : (
+        "Initializing..."
+      )}
       <footer>&copy; Cwitter {new Date().getFullYear()}</footer>
     </>
   );
