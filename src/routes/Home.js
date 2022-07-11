@@ -7,6 +7,7 @@ import {
   onSnapshot,
   orderBy,
 } from "firebase/firestore";
+import Cweet from "../components/Cweet";
 function Home({ userObj }) {
   const [cweet, setCweet] = useState("");
   const [cweets, setCweets] = useState([]);
@@ -58,9 +59,11 @@ function Home({ userObj }) {
       </form>
       <div>
         {cweets.map((cweet) => (
-          <div key={cweet.id}>
-            <h4>{cweet.text}</h4>
-          </div>
+          <Cweet
+            key={cweet.id}
+            cweetObj={cweet}
+            isOwner={cweet.creatorId === userObj.uid}
+          />
         ))}
       </div>
     </div>
