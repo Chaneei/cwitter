@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { dbService } from "../fbase";
+import { dbService, storageService } from "../fbase";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
 function Cweet({ cweetObj, isOwner }) {
   const [editing, setEditing] = useState(false);
   const [newCweet, setNewCweet] = useState(cweetObj.text);
@@ -9,6 +10,7 @@ function Cweet({ cweetObj, isOwner }) {
     if (ok) {
       //delete cweet
       await deleteDoc(doc(dbService, "cweets", `${cweetObj.id}`));
+      await deleteObject(ref(storageService, cweetObj, cweetObj.attachmentUrl));
     }
   };
   const toggleEditing = () => setEditing(!editing);

@@ -13,7 +13,7 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 function Home({ userObj }) {
   const [cweet, setCweet] = useState("");
   const [cweets, setCweets] = useState([]);
-  const [fileDes, setFileDes] = useState();
+  const [fileDes, setFileDes] = useState("");
   const fileinput = useRef();
   useEffect(() => {
     const q = query(
