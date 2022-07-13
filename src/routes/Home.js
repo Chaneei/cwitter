@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { dbService } from "../fbase";
 import {
   addDoc,
@@ -11,7 +11,8 @@ import Cweet from "../components/Cweet";
 function Home({ userObj }) {
   const [cweet, setCweet] = useState("");
   const [cweets, setCweets] = useState([]);
-
+  const [fileDes, setFileDes] = useState();
+  const fileinput = useRef();
   useEffect(() => {
     const q = query(
       collection(dbService, "cweets"),
@@ -45,6 +46,27 @@ function Home({ userObj }) {
     setCweet(value);
   };
 
+  const onFileChange = (e) => {
+    const {
+      target: { files },
+    } = e;
+    //e => target => files
+    const theFile = files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishedEvent) => {
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setFileDes(result);
+    };
+    reader.readAsDataURL(theFile);
+    //readAsDataURL을 통해 파일을 읽음
+  };
+  const onClearPhotoClick = () => {
+    setFileDes(null);
+    fileinput.current.value = null;
+  };
+
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -55,7 +77,19 @@ function Home({ userObj }) {
           placeholder="What`s on your mind?"
           maxLength={120}
         />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={onFileChange}
+          ref={fileinput}
+        />
         <input type="submit" value="Cweet" />
+        {fileDes && (
+          <>
+            <img src={fileDes} width="50px" height="50px" alt="profile" />
+            <button onClick={onClearPhotoClick}>Clear</button>
+          </>
+        )}
       </form>
       <div>
         {cweets.map((cweet) => (
