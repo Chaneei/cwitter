@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { dbService } from "../fbase";
+import { dbService, storageService } from "../fbase";
+import { v4 as uuidv4, v4 } from "uuid";
 import {
   addDoc,
   collection,
@@ -8,6 +9,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import Cweet from "../components/Cweet";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 function Home({ userObj }) {
   const [cweet, setCweet] = useState("");
   const [cweets, setCweets] = useState([]);
@@ -28,16 +30,21 @@ function Home({ userObj }) {
   }, []);
   const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await addDoc(collection(dbService, "cweets"), {
-        text: cweet,
-        createdAt: Date.now(),
-        creatorId: userObj.uid,
-      });
-    } catch (error) {
-      console.log(error);
+    let attachmentUrl = "";
+    if (fileDes !== "") {
+      const fileRef = ref(storageService, `${userObj.uid}/${v4()}`);
+      const response = await uploadString(fileRef, fileDes, "data_url");
+      attachmentUrl = await getDownloadURL(fileRef);
     }
+    const cweetObj = {
+      text: cweet,
+      createdAt: Date.now(),
+      creatorId: userObj.uid,
+      attachmentUrl,
+    };
+    await addDoc(collection(dbService, "cweets"), cweetObj);
     setCweet("");
+    setFileDes("");
   };
   const onChange = (e) => {
     const {

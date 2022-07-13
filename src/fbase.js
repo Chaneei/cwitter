@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -15,5 +16,6 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 export const authService = getAuth(firebaseApp);
 export const dbService = getFirestore();
+export const storageService = getStorage();
 //https://firebase.google.com/docs/auth/web/start?authuser=0#web-version-9
 //version 9 firebase-auth
