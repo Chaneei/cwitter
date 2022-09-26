@@ -15,7 +15,6 @@
     <img src="https://img.shields.io/badge/React-blue?logo=React"/>
     <img src="https://img.shields.io/badge/react_dom-blueviolet?logo=ReactOS"/>
     <img src="https://img.shields.io/badge/react_router_dom-critical?logo=React Table"/>
-    <img src="https://img.shields.io/badge/node.js-green?logo=Node.js"/>
     <img src="https://img.shields.io/badge/firebase-yellow?logo=firebase"/>
     <img src="https://img.shields.io/badge/gh__pages-%5E3.2.3-%23222222?logo=github pages"/>
     <img src="https://img.shields.io/badge/uuid-^8.3.2-orange?logo=uuid"/>
